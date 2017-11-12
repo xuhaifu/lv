@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome',['mate' => 'Laravel']);
 });
+
+Route::get('user/{id}', 'UserController@show');
+
+
+
+
