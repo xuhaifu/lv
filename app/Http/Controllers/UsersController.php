@@ -30,6 +30,8 @@ class UsersController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
+        //todo::Laravel中，如果要让一个已认证通过的用户实例进行登录使用  Auth::login($user)
+        Auth::login($user);
         session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
         return redirect()->route('users.show', [$user]);
     }
