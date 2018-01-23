@@ -8,6 +8,16 @@ use Auth;
 
 class SessionsController extends Controller
 {
+    public function __construct()
+    {
+        /**
+         * 使用 Auth 中间件提供的 guest 选项，用于指定一些只允许未登录用户访问的动作，因此我们需要通过对 guest 属性进行设置，只让未登录用户访问登录页面和注册页面。
+         */
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
     public function create()
     {
         return view('sessions.create');
@@ -31,11 +41,15 @@ class SessionsController extends Controller
             3). 如果匹配后两个值不一致，则返回 false；
             如果用户未找到，则返回 false。
          */
+        /**
+         * todo::redirect() 实例intended方法
+         * redirect() 实例提供了一个 intended 方法，该方法可将页面重定向到上一次请求尝试访问的页面上，并接收一个默认跳转地址参数，当上一次请求记录为空时，跳转到默认地址上。
+         */
         if (Auth::attempt($credentials, $request->has('remember'))) {
             session()->flash('success', '欢迎回来！');
             //todo::Laravel 提供的 Auth::user() 方法来获取 当前登录用户 的信息，并将数据传送给路由
             //todo::Laravel 提供了 Auth::check() 方法用于判断当前用户是否已登录，已登录返回 true，未登录返回 false（_header.blade.php）
-            return redirect()->route('users.show', [Auth::user()]);
+            return redirect()->intended(route('users.show', [Auth::user()]));
         } else {
             session()->flash('danger', '很抱歉，您的邮箱和密码不匹配');
             return redirect()->back();
